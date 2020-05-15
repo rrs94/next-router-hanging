@@ -1,20 +1,13 @@
-import React from 'react'
-import styled from 'styled-components'
-import Router from 'next/router'
+import Router from 'next/router';
+import { useIntl } from 'react-intl';
+import fetch from 'isomorphic-unfetch';
 import {
   Container,
   Anchor,
 } from '../components/styled';
-import { useIntl } from 'react-intl';
 import messages from '../utils/messages';
 
-
-const Title = styled.h1`
-  font-size: 50px;
-  color: ${({ theme }) => theme.colors.primary};
-`
-
-export default () => {
+const Page = (props) => {
   const { formatMessage } = useIntl();
   return (
     <>
@@ -31,10 +24,18 @@ export default () => {
         <Anchor onClick={() => Router.push('/page8')}>{formatMessage(messages.link8)}</Anchor>
         <Anchor onClick={() => Router.push('/page9')}>{formatMessage(messages.link9)}</Anchor>
         <Anchor onClick={() => Router.push('/page10')}>{formatMessage(messages.link10)}</Anchor>
-        <br/>
-        <div></div>
       </Container>
-      <Title>HOME</Title>
+      <div>{formatMessage(messages.page6)}</div>
+      <br />
+      <div>{props.pokemon.name}</div>
     </>
   )
 };
+
+Page.getInitialProps = async () => {
+  const res = await fetch('https://pokeapi.co/api/v2/pokemon/6/')
+  const json = await res.json()
+  return { pokemon: json }
+}
+
+export default Page;
